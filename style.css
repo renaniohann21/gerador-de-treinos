@@ -1,1 +1,1190 @@
+/* =====================================================================
+   TREMPO — style.css
+   Índice:
+   1. Reset & Base
+   2. Variáveis CSS (design tokens)
+   3. Tipografia
+   4. Layout utilitário
+   5. Header / Navegação
+   6. Hero
+   7. Botões
+   8. Gerador (formulário em etapas)
+   9. Estado de carregamento
+   10. Resultado do treino
+   11. Lista de exercícios
+   12. Histórico
+   13. Como funciona
+   14. Modo treino (cronômetro em overlay)
+   15. Tela de conclusão + confete
+   16. Toast (mensagens amigáveis)
+   17. Footer
+   18. Animações
+   19. Responsividade
+   ===================================================================== */
 
+/* ---------------------------------------------------------------------
+   1. RESET & BASE
+--------------------------------------------------------------------- */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+body, h1, h2, h3, p, figure, blockquote, ol, ul {
+  margin: 0;
+}
+
+ol, ul {
+  padding: 0;
+  list-style: none;
+}
+
+img, svg {
+  display: block;
+  max-width: 100%;
+}
+
+button, input, select, textarea {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* ---------------------------------------------------------------------
+   2. VARIÁVEIS CSS (design tokens)
+--------------------------------------------------------------------- */
+:root {
+  /* Cores — paleta principal */
+  --bg: #0B0F14;
+  --card: #151B23;
+  --card-raised: #1B222C;
+  --green: #A3FF12;
+  --green-2: #7ED321;
+  --text: #FFFFFF;
+  --text-muted: #9AA4B2;
+  --border: #242C36;
+  --danger: #FF4D4D;
+
+  /* Texto sobre verde precisa de contraste escuro */
+  --on-green: #05130A;
+
+  /* Tipografia */
+  --font-display: 'Space Grotesk', 'Segoe UI', system-ui, sans-serif;
+  --font-body: 'Inter', 'Segoe UI', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Courier New', monospace;
+
+  /* Espaçamento */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 64px;
+  --space-9: 96px;
+
+  /* Raios e sombras */
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --radius-pill: 999px;
+  --shadow-soft: 0 12px 32px rgba(0, 0, 0, 0.35);
+  --shadow-green: 0 8px 24px rgba(163, 255, 18, 0.18);
+
+  /* Largura de conteúdo */
+  --content-width: 1180px;
+
+  /* Transições */
+  --ease: cubic-bezier(0.2, 0.7, 0.3, 1);
+}
+
+/* ---------------------------------------------------------------------
+   3. TIPOGRAFIA
+--------------------------------------------------------------------- */
+body {
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+h1, h2, h3 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  line-height: 1.12;
+  letter-spacing: -0.01em;
+  color: var(--text);
+}
+
+h1 { font-size: clamp(2.4rem, 5vw, 3.6rem); }
+h2 { font-size: clamp(1.8rem, 3.2vw, 2.4rem); }
+h3 { font-size: 1.15rem; }
+
+p {
+  color: var(--text-muted);
+  max-width: 62ch;
+}
+
+/* Foco visível para navegação por teclado */
+:focus-visible {
+  outline: 2px solid var(--green);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+/* ---------------------------------------------------------------------
+   4. LAYOUT UTILITÁRIO
+--------------------------------------------------------------------- */
+.section-inner {
+  max-width: var(--content-width);
+  margin: 0 auto;
+  padding: var(--space-8) var(--space-5);
+}
+
+.section-inner > h2 {
+  text-align: center;
+}
+
+.section-sub {
+  text-align: center;
+  margin: var(--space-3) auto 0;
+  max-width: 46ch;
+}
+
+/* ---------------------------------------------------------------------
+   5. HEADER / NAVEGAÇÃO
+--------------------------------------------------------------------- */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: rgba(11, 15, 20, 0.86);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--border);
+}
+
+.header-inner {
+  max-width: var(--content-width);
+  margin: 0 auto;
+  padding: var(--space-3) var(--space-5);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+.logo {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
+}
+
+.logo-mark {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.3rem;
+  letter-spacing: 0.02em;
+  color: var(--green);
+}
+
+.logo-tag {
+  font-size: 0.68rem;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.nav {
+  display: flex;
+  gap: var(--space-5);
+}
+
+.nav-link {
+  font-size: 0.92rem;
+  color: var(--text-muted);
+  padding: var(--space-2) 0;
+  border-bottom: 2px solid transparent;
+  transition: color 0.2s var(--ease), border-color 0.2s var(--ease);
+}
+
+.nav-link:hover {
+  color: var(--text);
+  border-color: var(--green);
+}
+
+.nav-toggle {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  padding: var(--space-2);
+}
+
+.nav-toggle span {
+  width: 22px;
+  height: 2px;
+  background: var(--text);
+  border-radius: 2px;
+  transition: transform 0.25s var(--ease), opacity 0.25s var(--ease);
+}
+
+/* ---------------------------------------------------------------------
+   6. HERO
+--------------------------------------------------------------------- */
+.hero-inner {
+  max-width: var(--content-width);
+  margin: 0 auto;
+  padding: var(--space-9) var(--space-5) var(--space-8);
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: var(--space-8);
+  align-items: center;
+}
+
+.hero-copy h1 {
+  animation: fade-slide-up 0.7s var(--ease) both;
+}
+
+.hero-sub {
+  margin-top: var(--space-4);
+  font-size: 1.1rem;
+  color: var(--text-muted);
+  animation: fade-slide-up 0.7s 0.08s var(--ease) both;
+}
+
+.hero-micro {
+  margin-top: var(--space-2);
+  font-size: 0.88rem;
+  color: var(--green-2);
+  animation: fade-slide-up 0.7s 0.14s var(--ease) both;
+}
+
+#heroCta {
+  margin-top: var(--space-6);
+  animation: fade-slide-up 0.7s 0.2s var(--ease) both;
+}
+
+.hero-visual {
+  position: relative;
+  height: 380px;
+  animation: fade-in 0.9s 0.2s var(--ease) both;
+}
+
+.floating-card {
+  position: absolute;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: var(--space-3) var(--space-4);
+  box-shadow: var(--shadow-soft);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  animation: float 6s ease-in-out infinite;
+}
+
+.fc-label {
+  font-size: 0.66rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+}
+
+.fc-value {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.05rem;
+  color: var(--text);
+}
+
+.card-time {
+  top: 6%;
+  left: 4%;
+  animation-delay: 0s;
+}
+
+.card-type {
+  top: 46%;
+  left: 40%;
+  animation-delay: 1.4s;
+}
+
+.card-level {
+  bottom: 8%;
+  left: 2%;
+  animation-delay: 2.6s;
+}
+
+.hero-clock {
+  position: absolute;
+  top: 4%;
+  right: 2%;
+  width: 200px;
+}
+
+.clock-ring-bg {
+  fill: none;
+  stroke: var(--border);
+  stroke-width: 6;
+}
+
+.clock-ring-fg {
+  fill: none;
+  stroke: var(--green);
+  stroke-width: 6;
+  stroke-linecap: round;
+  stroke-dasharray: 339;
+  stroke-dashoffset: 90;
+  transform: rotate(-90deg);
+  transform-origin: 60px 60px;
+  animation: clock-tick 4s linear infinite;
+}
+
+.clock-text {
+  fill: var(--text);
+  font-family: var(--font-mono);
+  font-size: 18px;
+}
+
+/* ---------------------------------------------------------------------
+   7. BOTÕES
+--------------------------------------------------------------------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-5);
+  border-radius: var(--radius-pill);
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: transform 0.15s var(--ease), box-shadow 0.2s var(--ease), background 0.2s var(--ease);
+  white-space: nowrap;
+}
+
+.btn:active {
+  transform: scale(0.97);
+}
+
+.btn-primary {
+  background: var(--green);
+  color: var(--on-green);
+  box-shadow: var(--shadow-green);
+}
+
+.btn-primary:hover {
+  background: var(--green-2);
+  box-shadow: 0 10px 28px rgba(163, 255, 18, 0.28);
+}
+
+.btn-secondary {
+  background: var(--card-raised);
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+
+.btn-secondary:hover {
+  border-color: var(--green);
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+
+.btn-ghost:hover {
+  border-color: var(--green);
+  color: var(--green);
+}
+
+.btn-lg {
+  padding: var(--space-4) var(--space-6);
+  font-size: 1rem;
+}
+
+.btn-xl {
+  width: 100%;
+  padding: var(--space-4) var(--space-6);
+  font-size: 1.05rem;
+  margin-top: var(--space-6);
+}
+
+.btn-text {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.btn-text:hover {
+  color: var(--green);
+}
+
+.btn-text-danger {
+  color: var(--danger);
+  margin-top: var(--space-4);
+  font-size: 0.85rem;
+}
+
+/* ---------------------------------------------------------------------
+   8. GERADOR (formulário em etapas)
+--------------------------------------------------------------------- */
+.generator {
+  border-top: 1px solid var(--border);
+}
+
+.generator-form {
+  margin-top: var(--space-7);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.step-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+}
+
+.step-card legend {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.05rem;
+  padding: 0 0 var(--space-4);
+}
+
+.option-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: var(--space-3);
+}
+
+.option-grid--goal,
+.option-grid--type {
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+}
+
+.option {
+  position: relative;
+  background: var(--card-raised);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: var(--space-4) var(--space-3);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-1);
+  transition: transform 0.18s var(--ease), border-color 0.18s var(--ease), background 0.18s var(--ease);
+}
+
+.option:hover {
+  border-color: var(--green-2);
+}
+
+.option-icon {
+  font-size: 1.3rem;
+}
+
+.option-label {
+  font-weight: 600;
+  font-size: 0.92rem;
+}
+
+.option-sub {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+.option[aria-checked="true"] {
+  border-color: var(--green);
+  background: rgba(163, 255, 18, 0.08);
+  transform: scale(1.03);
+}
+
+.option[aria-checked="true"]::after {
+  content: "✓";
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  color: var(--green);
+  font-weight: 700;
+  font-size: 0.8rem;
+}
+
+.field-error {
+  color: var(--danger);
+  font-size: 0.85rem;
+  margin-top: var(--space-3);
+}
+
+/* ---------------------------------------------------------------------
+   9. ESTADO DE CARREGAMENTO
+--------------------------------------------------------------------- */
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-8) 0;
+  animation: fade-in 0.3s var(--ease) both;
+}
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 3px solid var(--border);
+  border-top-color: var(--green);
+  animation: spin 0.8s linear infinite;
+}
+
+.loading-state p {
+  color: var(--text-muted);
+}
+
+/* ---------------------------------------------------------------------
+   10. RESULTADO DO TREINO
+--------------------------------------------------------------------- */
+.result {
+  border-top: 1px solid var(--border);
+}
+
+.result-summary-card {
+  background: linear-gradient(160deg, var(--card) 0%, var(--card-raised) 100%);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+  margin-top: var(--space-6);
+  animation: fade-slide-up 0.5s var(--ease) both;
+}
+
+.result-summary-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.trempo-badge {
+  font-family: var(--font-display);
+  font-weight: 700;
+  color: var(--green);
+  font-size: 1rem;
+}
+
+.result-summary-meta {
+  display: flex;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+  margin-top: var(--space-4);
+}
+
+.meta-pill {
+  background: rgba(163, 255, 18, 0.1);
+  color: var(--green);
+  border: 1px solid rgba(163, 255, 18, 0.3);
+  border-radius: var(--radius-pill);
+  padding: var(--space-1) var(--space-4);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.result-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-4);
+  margin-top: var(--space-6);
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.stat-icon {
+  font-size: 1.2rem;
+  margin-bottom: var(--space-1);
+}
+
+.stat-label {
+  font-size: 0.76rem;
+  color: var(--text-muted);
+}
+
+.stat-value {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+.result-actions {
+  display: flex;
+  gap: var(--space-3);
+  margin-top: var(--space-6);
+  flex-wrap: wrap;
+}
+
+/* ---------------------------------------------------------------------
+   11. LISTA DE EXERCÍCIOS
+--------------------------------------------------------------------- */
+.exercise-list {
+  margin-top: var(--space-6);
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: var(--space-4);
+}
+
+.exercise-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  animation: fade-slide-up 0.4s var(--ease) both;
+}
+
+.exercise-card.is-rest {
+  border-style: dashed;
+  background: transparent;
+}
+
+.exercise-top {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.exercise-number {
+  font-family: var(--font-mono);
+  color: var(--green);
+  font-size: 0.85rem;
+  min-width: 24px;
+}
+
+.exercise-name {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.02rem;
+}
+
+.exercise-meta {
+  display: flex;
+  gap: var(--space-2);
+  align-items: center;
+  font-size: 0.76rem;
+  color: var(--text-muted);
+}
+
+.exercise-category {
+  background: var(--card-raised);
+  border-radius: var(--radius-pill);
+  padding: 2px var(--space-2);
+  font-size: 0.68rem;
+  letter-spacing: 0.03em;
+}
+
+.exercise-instruction {
+  font-size: 0.86rem;
+  color: var(--text-muted);
+}
+
+.exercise-duration-bar {
+  height: 4px;
+  background: var(--border);
+  border-radius: var(--radius-pill);
+  overflow: hidden;
+  margin-top: var(--space-1);
+}
+
+.exercise-duration-fill {
+  height: 100%;
+  background: var(--green);
+  border-radius: var(--radius-pill);
+}
+
+/* ---------------------------------------------------------------------
+   12. HISTÓRICO
+--------------------------------------------------------------------- */
+.history {
+  border-top: 1px solid var(--border);
+}
+
+.history-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin-top: var(--space-6);
+}
+
+.history-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: var(--space-4) var(--space-5);
+  flex-wrap: wrap;
+}
+
+.history-day {
+  font-family: var(--font-display);
+  font-weight: 600;
+  min-width: 90px;
+}
+
+.history-detail {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.history-empty {
+  text-align: center;
+  padding: var(--space-8) var(--space-4);
+  border: 1px dashed var(--border);
+  border-radius: var(--radius-lg);
+  margin-top: var(--space-6);
+}
+
+.history-empty h3 {
+  margin-bottom: var(--space-2);
+}
+
+.history-empty .btn {
+  margin-top: var(--space-5);
+}
+
+/* ---------------------------------------------------------------------
+   13. COMO FUNCIONA
+--------------------------------------------------------------------- */
+.how-it-works {
+  border-top: 1px solid var(--border);
+}
+
+.how-grid {
+  margin-top: var(--space-7);
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-5);
+}
+
+.how-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6) var(--space-5);
+}
+
+.how-num {
+  display: inline-block;
+  font-family: var(--font-mono);
+  color: var(--green);
+  font-size: 0.85rem;
+  margin-bottom: var(--space-3);
+}
+
+.how-card h3 {
+  margin-bottom: var(--space-2);
+}
+
+/* ---------------------------------------------------------------------
+   14. MODO TREINO (overlay em tela cheia)
+--------------------------------------------------------------------- */
+.workout-mode {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: var(--bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fade-in 0.3s var(--ease) both;
+}
+
+.workout-mode-inner {
+  width: 100%;
+  max-width: 460px;
+  padding: var(--space-6);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  position: relative;
+}
+
+.workout-close {
+  position: absolute;
+  top: var(--space-2);
+  right: var(--space-2);
+  font-size: 1.1rem;
+  color: var(--text-muted);
+  padding: var(--space-2);
+}
+
+.workout-close:hover {
+  color: var(--text);
+}
+
+.workout-progress-label {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+.workout-progress-bar {
+  width: 100%;
+  height: 5px;
+  background: var(--border);
+  border-radius: var(--radius-pill);
+  overflow: hidden;
+  margin-top: var(--space-2);
+}
+
+.workout-progress-fill {
+  height: 100%;
+  background: var(--green);
+  border-radius: var(--radius-pill);
+  transition: width 0.4s var(--ease);
+}
+
+.workout-exercise-name {
+  margin-top: var(--space-6);
+  font-size: clamp(1.6rem, 5vw, 2.2rem);
+}
+
+.workout-exercise-instruction {
+  margin-top: var(--space-3);
+  max-width: 40ch;
+}
+
+.workout-timer-ring {
+  position: relative;
+  width: 220px;
+  height: 220px;
+  margin: var(--space-7) 0;
+}
+
+.timer-ring-bg {
+  fill: none;
+  stroke: var(--border);
+  stroke-width: 8;
+}
+
+.timer-ring-fg {
+  fill: none;
+  stroke: var(--green);
+  stroke-width: 8;
+  stroke-linecap: round;
+  stroke-dasharray: 565.5;
+  stroke-dashoffset: 0;
+  transform: rotate(-90deg);
+  transform-origin: 100px 100px;
+  transition: stroke-dashoffset 1s linear, stroke 0.3s var(--ease);
+}
+
+.workout-timer-value {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono);
+  font-size: 2.6rem;
+  font-weight: 600;
+}
+
+.workout-controls {
+  display: flex;
+  gap: var(--space-3);
+  width: 100%;
+}
+
+.workout-controls .btn {
+  flex: 1;
+}
+
+/* ---------------------------------------------------------------------
+   15. TELA DE CONCLUSÃO + CONFETE
+--------------------------------------------------------------------- */
+.workout-complete {
+  position: fixed;
+  inset: 0;
+  z-index: 110;
+  background: var(--bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  animation: fade-in 0.4s var(--ease) both;
+}
+
+#confettiCanvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.complete-inner {
+  position: relative;
+  z-index: 1;
+  max-width: 480px;
+  width: 100%;
+  padding: var(--space-6);
+  text-align: center;
+  animation: fade-slide-up 0.5s 0.1s var(--ease) both;
+}
+
+.complete-eyebrow {
+  color: var(--green);
+  font-weight: 600;
+  font-size: 0.85rem;
+  letter-spacing: 0.03em;
+}
+
+.complete-inner h2 {
+  margin-top: var(--space-3);
+}
+
+.complete-msg {
+  margin: var(--space-3) auto 0;
+}
+
+.complete-stats {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-4);
+  margin-top: var(--space-7);
+  text-align: left;
+}
+
+.complete-actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin-top: var(--space-7);
+}
+
+/* ---------------------------------------------------------------------
+   16. TOAST
+--------------------------------------------------------------------- */
+.toast {
+  position: fixed;
+  bottom: var(--space-5);
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--card-raised);
+  border: 1px solid var(--danger);
+  color: var(--text);
+  padding: var(--space-3) var(--space-5);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-soft);
+  z-index: 200;
+  font-size: 0.9rem;
+  max-width: 90vw;
+  animation: toast-in 0.3s var(--ease) both;
+}
+
+/* ---------------------------------------------------------------------
+   17. FOOTER
+--------------------------------------------------------------------- */
+.site-footer {
+  border-top: 1px solid var(--border);
+  padding: var(--space-7) var(--space-5) var(--space-5);
+}
+
+.footer-inner {
+  max-width: var(--content-width);
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: var(--space-5);
+  flex-wrap: wrap;
+}
+
+.footer-brand p {
+  font-size: 0.85rem;
+  margin-top: var(--space-1);
+}
+
+.footer-nav {
+  display: flex;
+  gap: var(--space-5);
+  flex-wrap: wrap;
+}
+
+.footer-nav a {
+  color: var(--text-muted);
+  font-size: 0.88rem;
+}
+
+.footer-nav a:hover {
+  color: var(--green);
+}
+
+.footer-copy {
+  text-align: center;
+  margin-top: var(--space-6);
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+/* ---------------------------------------------------------------------
+   18. ANIMAÇÕES
+--------------------------------------------------------------------- */
+@keyframes fade-slide-up {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes clock-tick {
+  0% { stroke-dashoffset: 339; }
+  100% { stroke-dashoffset: 0; }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes toast-in {
+  from { opacity: 0; transform: translate(-50%, 12px); }
+  to { opacity: 1; transform: translate(-50%, 0); }
+}
+
+/* ---------------------------------------------------------------------
+   19. RESPONSIVIDADE
+--------------------------------------------------------------------- */
+@media (max-width: 900px) {
+  .hero-inner {
+    grid-template-columns: 1fr;
+    padding-top: var(--space-7);
+  }
+
+  .hero-visual {
+    height: 300px;
+    order: -1;
+  }
+
+  .how-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .result-stats {
+    grid-template-columns: 1fr;
+    gap: var(--space-3);
+  }
+}
+
+@media (max-width: 720px) {
+  .nav {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+    flex-direction: column;
+    padding: var(--space-4) var(--space-5);
+    gap: var(--space-3);
+    display: none;
+  }
+
+  .nav.is-open {
+    display: flex;
+  }
+
+  .nav-toggle {
+    display: flex;
+  }
+
+  .nav-toggle.is-open span:nth-child(1) {
+    transform: translateY(7px) rotate(45deg);
+  }
+  .nav-toggle.is-open span:nth-child(2) {
+    opacity: 0;
+  }
+  .nav-toggle.is-open span:nth-child(3) {
+    transform: translateY(-7px) rotate(-45deg);
+  }
+
+  .section-inner {
+    padding: var(--space-7) var(--space-4);
+  }
+
+  .exercise-list {
+    grid-template-columns: 1fr;
+  }
+
+  .result-actions {
+    flex-direction: column;
+  }
+
+  .result-actions .btn {
+    width: 100%;
+  }
+
+  .complete-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .workout-timer-ring {
+    width: 180px;
+    height: 180px;
+  }
+
+  .workout-timer-value {
+    font-size: 2.1rem;
+  }
+
+  .history-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-1);
+  }
+}
