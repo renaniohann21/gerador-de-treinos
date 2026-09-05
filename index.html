@@ -1,1 +1,303 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TREMPO — Gerador de Treinos</title>
+  <meta name="description" content="Escolha quanto tempo você tem e deixe o TREMPO montar seu treino personalizado.">
 
+  <!-- Open Graph -->
+  <meta property="og:title" content="TREMPO — Gerador de Treinos">
+  <meta property="og:description" content="Seu tempo. Seu treino. Seu ritmo.">
+  <meta property="og:type" content="website">
+
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- ===================== HEADER ===================== -->
+  <header class="site-header" id="topo">
+    <div class="header-inner">
+      <a href="#topo" class="logo" aria-label="TREMPO — página inicial">
+        <span class="logo-mark">TREMPO</span>
+        <span class="logo-tag">Seu tempo. Seu treino. Seu ritmo.</span>
+      </a>
+
+      <button class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="navMenu" aria-label="Abrir menu">
+        <span></span><span></span><span></span>
+      </button>
+
+      <nav class="nav" id="navMenu" aria-label="Navegação principal">
+        <a href="#topo" class="nav-link">Início</a>
+        <a href="#gerador" class="nav-link">Gerar treino</a>
+        <a href="#como-funciona" class="nav-link">Como funciona</a>
+        <a href="#historico" class="nav-link">Histórico</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <!-- ===================== HERO ===================== -->
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="hero-inner">
+        <div class="hero-copy">
+          <h1 id="hero-title">Quanto tempo você tem hoje?</h1>
+          <p class="hero-sub">Diga quanto tempo você tem e o TREMPO monta um treino para você.</p>
+          <p class="hero-micro">Sem complicação. Sem perder tempo. Só treinar.</p>
+          <a href="#gerador" class="btn btn-primary btn-lg" id="heroCta">
+            Montar meu treino <span aria-hidden="true">→</span>
+          </a>
+        </div>
+
+        <div class="hero-visual" aria-hidden="true">
+          <div class="floating-card card-time">
+            <span class="fc-label">Tempo</span>
+            <span class="fc-value">20 min</span>
+          </div>
+          <div class="floating-card card-type">
+            <span class="fc-label">Treino</span>
+            <span class="fc-value">Full Body</span>
+          </div>
+          <div class="floating-card card-level">
+            <span class="fc-label">Nível</span>
+            <span class="fc-value">Intermediário</span>
+          </div>
+          <div class="hero-clock">
+            <svg viewBox="0 0 120 120" class="clock-svg">
+              <circle cx="60" cy="60" r="54" class="clock-ring-bg"/>
+              <circle cx="60" cy="60" r="54" class="clock-ring-fg" id="heroClockRing"/>
+              <text x="60" y="68" text-anchor="middle" class="clock-text">00:40</text>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== GERADOR ===================== -->
+    <section class="generator" id="gerador" aria-labelledby="gen-title">
+      <div class="section-inner">
+        <h2 id="gen-title">Monte seu treino</h2>
+        <p class="section-sub">Personalize sua sessão em poucos segundos.</p>
+
+        <form id="generatorForm" class="generator-form" novalidate>
+
+          <!-- ETAPA 1 — TEMPO -->
+          <fieldset class="step-card" data-step="time">
+            <legend>Quanto tempo você tem?</legend>
+            <div class="option-grid option-grid--time" role="radiogroup" aria-label="Tempo disponível">
+              <!-- preenchido via JS -->
+            </div>
+            <p class="field-error" data-error-for="time" hidden></p>
+          </fieldset>
+
+          <!-- ETAPA 2 — OBJETIVO -->
+          <fieldset class="step-card" data-step="goal">
+            <legend>Qual é o seu objetivo?</legend>
+            <div class="option-grid option-grid--goal" role="radiogroup" aria-label="Objetivo do treino">
+            </div>
+            <p class="field-error" data-error-for="goal" hidden></p>
+          </fieldset>
+
+          <!-- ETAPA 3 — NÍVEL -->
+          <fieldset class="step-card" data-step="level">
+            <legend>Qual é o seu nível?</legend>
+            <div class="option-grid option-grid--level" role="radiogroup" aria-label="Nível de experiência">
+            </div>
+            <p class="field-error" data-error-for="level" hidden></p>
+          </fieldset>
+
+          <!-- ETAPA 4 — TIPO -->
+          <fieldset class="step-card" data-step="type">
+            <legend>Que tipo de treino você quer?</legend>
+            <div class="option-grid option-grid--type" role="radiogroup" aria-label="Tipo de treino">
+            </div>
+            <p class="field-error" data-error-for="type" hidden></p>
+          </fieldset>
+
+          <!-- ETAPA 5 — EQUIPAMENTOS -->
+          <fieldset class="step-card" data-step="equipment">
+            <legend>Você tem equipamentos?</legend>
+            <div class="option-grid option-grid--equipment" role="radiogroup" aria-label="Equipamentos disponíveis">
+            </div>
+            <p class="field-error" data-error-for="equipment" hidden></p>
+          </fieldset>
+
+          <button type="submit" class="btn btn-primary btn-xl" id="generateBtn">
+            Gerar meu treino <span aria-hidden="true">⚡</span>
+          </button>
+        </form>
+
+        <!-- Loading state -->
+        <div class="loading-state" id="loadingState" hidden>
+          <div class="loading-spinner" aria-hidden="true"></div>
+          <p>Preparando seu TREMPO...</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== RESULTADO ===================== -->
+    <section class="result" id="resultado" hidden aria-labelledby="result-title">
+      <div class="section-inner">
+        <h2 id="result-title">Seu treino está pronto.</h2>
+
+        <div class="result-summary-card">
+          <div class="result-summary-top">
+            <span class="trempo-badge">TREMPO DO DIA <span aria-hidden="true">⚡</span></span>
+            <button class="btn-text" id="editPrefsBtn">Editar preferências</button>
+          </div>
+          <div class="result-summary-meta">
+            <span class="meta-pill" id="resultTime">20 MIN</span>
+            <span class="meta-pill" id="resultType">FULL BODY</span>
+            <span class="meta-pill" id="resultLevel">INTERMEDIÁRIO</span>
+          </div>
+          <div class="result-stats">
+            <div class="stat">
+              <span class="stat-icon" aria-hidden="true">🔥</span>
+              <span class="stat-label">Calorias estimadas</span>
+              <span class="stat-value" id="resultCalories">180–240 kcal</span>
+            </div>
+            <div class="stat">
+              <span class="stat-icon" aria-hidden="true">💪</span>
+              <span class="stat-label">Foco</span>
+              <span class="stat-value" id="resultFocus">Corpo inteiro</span>
+            </div>
+            <div class="stat">
+              <span class="stat-icon" aria-hidden="true">⏱️</span>
+              <span class="stat-label">Duração</span>
+              <span class="stat-value" id="resultDuration">20 minutos</span>
+            </div>
+          </div>
+
+          <div class="result-actions">
+            <button class="btn btn-primary btn-lg" id="startWorkoutBtn">Começar treino <span aria-hidden="true">▶</span></button>
+            <button class="btn btn-ghost" id="rerollBtn">Me dê outro TREMPO <span aria-hidden="true">🎲</span></button>
+          </div>
+        </div>
+
+        <ol class="exercise-list" id="exerciseList" aria-label="Lista de exercícios do treino">
+          <!-- preenchido via JS -->
+        </ol>
+      </div>
+    </section>
+
+    <!-- ===================== HISTÓRICO ===================== -->
+    <section class="history" id="historico" aria-labelledby="history-title">
+      <div class="section-inner">
+        <h2 id="history-title">Seu histórico</h2>
+        <div id="historyContent">
+          <!-- preenchido via JS: lista ou empty state -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== COMO FUNCIONA ===================== -->
+    <section class="how-it-works" id="como-funciona" aria-labelledby="how-title">
+      <div class="section-inner">
+        <h2 id="how-title">Como o TREMPO funciona?</h2>
+        <div class="how-grid">
+          <article class="how-card">
+            <span class="how-num">01</span>
+            <h3>Você escolhe</h3>
+            <p>Diga quanto tempo você tem.</p>
+          </article>
+          <article class="how-card">
+            <span class="how-num">02</span>
+            <h3>A gente monta</h3>
+            <p>O TREMPO combina exercícios de acordo com suas preferências.</p>
+          </article>
+          <article class="how-card">
+            <span class="how-num">03</span>
+            <h3>Você treina</h3>
+            <p>Comece o cronômetro e siga seu treino.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ===================== MODO TREINO (overlay) ===================== -->
+  <div class="workout-mode" id="workoutMode" hidden role="dialog" aria-modal="true" aria-labelledby="workoutExerciseName">
+    <div class="workout-mode-inner">
+      <button class="workout-close" id="workoutCloseBtn" aria-label="Encerrar treino">✕</button>
+
+      <p class="workout-progress-label" id="workoutProgressLabel">Exercício 1 de 12</p>
+      <div class="workout-progress-bar">
+        <div class="workout-progress-fill" id="workoutProgressFill"></div>
+      </div>
+
+      <h2 class="workout-exercise-name" id="workoutExerciseName">AGACHAMENTO</h2>
+      <p class="workout-exercise-instruction" id="workoutInstruction">Mantenha os pés afastados na largura dos ombros.</p>
+
+      <div class="workout-timer-ring">
+        <svg viewBox="0 0 200 200" class="timer-svg">
+          <circle cx="100" cy="100" r="90" class="timer-ring-bg"/>
+          <circle cx="100" cy="100" r="90" class="timer-ring-fg" id="timerRingFg"/>
+        </svg>
+        <span class="workout-timer-value" id="workoutTimerValue">00:40</span>
+      </div>
+
+      <div class="workout-controls">
+        <button class="btn btn-secondary" id="pauseBtn">Pausar</button>
+        <button class="btn btn-primary" id="nextExerciseBtn">Próximo exercício</button>
+      </div>
+      <button class="btn-text btn-text-danger" id="endWorkoutBtn">Encerrar treino</button>
+    </div>
+  </div>
+
+  <!-- ===================== TELA DE CONCLUSÃO ===================== -->
+  <div class="workout-complete" id="workoutComplete" hidden role="dialog" aria-modal="true" aria-labelledby="completeTitle">
+    <canvas id="confettiCanvas" aria-hidden="true"></canvas>
+    <div class="complete-inner">
+      <p class="complete-eyebrow">TREINO CONCLUÍDO <span aria-hidden="true">🎉</span></p>
+      <h2 id="completeTitle">Você fez seu TREMPO.</h2>
+      <p class="complete-msg">Não precisava ser perfeito. Só precisava começar.</p>
+
+      <div class="complete-stats">
+        <div class="stat">
+          <span class="stat-label">Tempo total</span>
+          <span class="stat-value" id="completeTime">—</span>
+        </div>
+        <div class="stat">
+          <span class="stat-label">Exercícios concluídos</span>
+          <span class="stat-value" id="completeExercises">—</span>
+        </div>
+        <div class="stat">
+          <span class="stat-label">Calorias estimadas</span>
+          <span class="stat-value" id="completeCalories">—</span>
+        </div>
+        <div class="stat">
+          <span class="stat-label">Tipo de treino</span>
+          <span class="stat-value" id="completeType">—</span>
+        </div>
+      </div>
+
+      <div class="complete-actions">
+        <button class="btn btn-primary btn-lg" id="newWorkoutBtn">Gerar outro treino</button>
+        <button class="btn btn-ghost" id="backHomeBtn">Voltar ao início</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== TOAST (mensagens amigáveis) ===================== -->
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+  <!-- ===================== FOOTER ===================== -->
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <span class="logo-mark">TREMPO</span>
+        <p>Seu tempo. Seu treino. Seu ritmo.</p>
+      </div>
+      <nav class="footer-nav" aria-label="Links do rodapé">
+        <a href="#topo">Início</a>
+        <a href="#gerador">Gerar treino</a>
+        <a href="#historico">Histórico</a>
+        <a href="#como-funciona">Como funciona</a>
+      </nav>
+    </div>
+    <p class="footer-copy">© 2026 TREMPO. Treine no seu ritmo.</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
